@@ -356,7 +356,7 @@ class XANES:
     #----------------------------------------------------------------------------------------#
     #                                        plot data                                       #
     #----------------------------------------------------------------------------------------#
-    def plot1d(self,startTime = 0, offsetTime = 0, insitu=False,color="black", title: str = None,savefig: str = None,outputPath=None, jump=None, maxE=None, minE=None):
+    def plot1d(self,startTime = -1, offsetTime = 0, insitu=False,color="black", title: str = None,savefig: str = None,outputPath=None, jump=None, maxE=None, minE=None):
         """
         Arguments
         ----------
@@ -403,8 +403,11 @@ class XANES:
                         ramp = np.linspace(self.linewidth,self.linewidth/2,int(len(self.matrix)/2)) 
                         thickness = np.concatenate((ramp,ramp[::-1])) 
                     else:
-                        ramp = np.linspace(self.linewidth,self.linewidth/2,int(len(self.matrix)/2)) 
-                        thickness = np.concatenate(np.concatenate(ramp,np.array([self.linewidth/2])),ramp[::-1]) 
+                        if len(self.matrix) == 1:
+                            thickness =[self.linewidth]  
+                        else:
+                            ramp = np.linspace(self.linewidth,self.linewidth/2,int(len(self.matrix)/2)) 
+                            thickness = np.concatenate((np.concatenate((ramp,np.array([self.linewidth/2]))),ramp[::-1])) 
 
 
                     if self.time_array[i] < offsetTime:
@@ -412,8 +415,7 @@ class XANES:
                     else:
                         prelabel = ""
 
-
-                    ax.plot(self.x, j, linewidth=thickness[i], color=colormapRB[int(self.time_array[i])], label=prelabel + str(int(self.temp_array[tempindex])) + " °C", alpha=1)
+                    ax.plot(self.x, j, linewidth=thickness[i], color=colormapRB[int(self.time_array[i])], label=prelabel + str(int(self.temp_array[int(tempindex[0])])) + " °C", alpha=1)
                     ax.legend(prop={'size': 18}, ncol=3,loc='lower right', handlelength=1.6).get_frame().set_linewidth(0.0)
 
             sm = plt.cm.ScalarMappable(cmap=newcmp, norm=plt.Normalize(vmin=0, vmax=int(self.time_array[-1])-startTime))

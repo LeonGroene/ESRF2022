@@ -17,7 +17,6 @@ for users of the ID26 at the ESRF facility for h5 file loading and area normalis
 
 """
 
-from matplotlib.pyplot import savefig
 import backbone.XANES_class as XANES_class
 import pathlib
 from time import time
@@ -72,9 +71,9 @@ jump = 10           #Define the step lenght of the scans to show in the 1D plot
 minE = 9.658        #Define the minimum energy to start the plot with, if not used pleas set to None
 maxE = 9.677        #Define the maximum energy to end the plot, if not used pleas set to None 
 startScan = 42      #Define the first fscan to process for the plot
-endScan = 56        #Define the last fscan to process for the plot
+endScan = 200        #Define the last fscan to process for the plot
 timeofset = 0       #Just a visulisation tool to shift the time 0 to over values like the reaktion starting time
-raw = True          #Circumvent first normalisation step (area normalisation)
+raw = False          #Circumvent first normalisation step (area normalisation)
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -100,7 +99,7 @@ t0 = time() #start time   #
 #           Insitu example         #
 #/////////////////\\\\\\\\\\\\\\\\\#
 
-filename = 'C:/Users/ASUS/Documents/Uni/Module/Python/hello/Master/Masterarbeit/bt_esrf/HC-4929/raw/cell_22_xanes_ZnS_olga/cell_22_xanes_ZnS_olga_0001/cell_22_xanes_ZnS_olga_0001.h5' #input file directory
+filename = '/home/esrf/tjark1998a/Documents/cell_22_xanes_ZnS_olga_0001.h5' #input file directory
 sampleName = "ZnAc and S in Oleylamine"
 meas3 = XANES_class.XANES(filename,sampleName= sampleName, startScan=startScan, endScan=endScan,
                             counterXAS=counter_XAS, Energys=Energys,timeOfset=timeofset, figratio1D=figratio1D, raw = raw,
@@ -109,12 +108,12 @@ meas3.norm() #normalise with pre and post edge fit
 meas3.Filter("lFilter",7) #Filterer are lFilter or savgol, second argument is strength 
 #meas3.saveReload(outputPath=rootdir + "/progressed/Reload") #For insitu very practical to shortan loading times
 #meas3.rebin(3) #number of points to rebin
-meas3.average(9) #number of points to average over
+#meas3.average(9) #number of points to average over
 
 #The Plots can all be saved with savefig=True and outputPath=: your output directory
-#meas3.plot1d(insitu=True,offsetTime=2008, setTemp=0,savefig=savefigType,outputPath=rootdir + "/progressed/XANES/Plot_1D",jump=jump,minE=minE,maxE=maxE) #plot in 1D, insitu=True will define color change and hides ledgend
+meas3.plot1d(insitu=True,savefig=savefigType,outputPath=outdir + "/XANES/Plot_1D",jump=jump,minE=minE,maxE=maxE) #plot in 1D, insitu=True will define color change and hides ledgend
 #meas3.plot2d(vmin=0.88,vmax=1.62,savefig=savefigType,outputPath=rootdir + "HC-4929/processed/Plot_2D") #colormap min and max can be set with vmin, vmax 
-#meas3.plot2dTemp(vmin=0.88,vmax=1.62,savefig=savefigType,outputPath=rootdir + "/progressed/XANES/Plot_2D_+temp", rect=rectangle)
+meas3.plot2dTemp(vmin=0.88,vmax=1.62,savefig=savefigType,outputPath=outdir + "/XANES/Plot_2D_+temp", rect=rectangle)
 #meas3.plot3d(vmin=0.88,vmax=1.62,elev=16,azim=-85) #colormap min and max can be set with vmin and vmax | viewpoint can be set with elev and azim in [°]
 
 
@@ -130,22 +129,23 @@ meas3.outputDatFile(outdir + "XANES/Dat") #Will output curent processing result 
 #/////////////////\\\\\\\\\\\\\\\\\#
 
 
-filename = 'C:/Users/ASUS/Documents/Uni/Module/Python/hello/Master/Masterarbeit/bt_esrf/HC-4929/raw/cell_27_ZnAc_Oamine_XANES_ex-situ-1/cell_27_ZnAc_Oamine_XANES_ex-situ-1_0001/cell_27_ZnAc_Oamine_XANES_ex-situ-1_0001.h5'#rootdir+'/HC-4929/raw/Znac-exsitu-1/Znac-exsitu-1_0001/Znac-exsitu-1_0001.h5' #input file directory
-meas = XANES_class.XANES(filename,sampleName= "ZnAc in Oleylamine", startScan=1,endScan=20,counterXAS=counter_XAS, Energys=Energys, raw = raw)
+filename = '/home/esrf/tjark1998a/Documents/cell_27_ZnAc_Oamine_XANES_ex-situ-1_0001.h5'
+sampleName = "ZnAc in Oleylamine"
+meas = XANES_class.XANES(filename,sampleName= sampleName, startScan=1,endScan=20,counterXAS=counter_XAS, Energys=Energys, raw = raw)
 meas.norm()
 meas.Filter("lFilter",5)
 #meas.rebin(3)
 meas.average() # For exitu samples very conveniant
-#meas.saveReload(outputPath=rootdir + "/progressed/Reload") #For insitu very practical to shortan loading times
+#meas.saveReload(outputPath=rootdir + "/processed/Reload") #For insitu very practical to shortan loading times
 meas.outputDatFile(outdir + "/XANES/Dat")
 
-filename = 'C:/Users/ASUS/Documents/Uni/Module/Python/hello/Master/Masterarbeit/bt_esrf/HC-4929/raw/Znac-exsitu-1/Znac-exsitu-1_0001/Znac-exsitu-1_0001.h5'#rootdir+'/HC-4929/raw/Znac-exsitu-1/Znac-exsitu-1_0001/Znac-exsitu-1_0001.h5' #input file directory
+filename = '/home/esrf/tjark1998a/Documents/Znac-exsitu-1_0001.h5'
 meas2 = XANES_class.XANES(filename,sampleName= "ZnAc Powder", startScan=1,endScan=2,counterXAS=counter_XAS, Energys=Energys, raw = raw)
 meas2.norm()
 meas2.Filter("lFilter",5)
 #meas2.rebin(3)
 #meas2.average()
-#meas2.saveReload(outputPath=rootdir + "/progressed/Reload") #For insitu very practical to shortan loading times
+#meas2.saveReload(outputPath=rootdir + "/processed/Reload") #For insitu very practical to shortan loading times
 meas2.outputDatFile(outdir + "/XANES/Dat")
 
 
@@ -179,9 +179,10 @@ insitu = [False,False,False] #with scans are insitu meas.
 # =====================================#
 
 ###### Only thing to change here is plotName and maby outputPath
+plotName = "ZnAc in differen environments raw range=90eV"
 XANES_class.plot1d_multi(x=x,matrix=matrix,sampleNames=sampleNames,scan=scan,insitu=insitu,
                             linewidth=linewidth, framewidth=framewidth, figratio1D=figratio1D, 
-                            minE=minE, maxE=maxE, savefig=savefigType, plotName="ZnAc in differen environments raw range=90eV", 
+                            minE=minE, maxE=maxE, savefig=savefigType, plotName=plotName, 
                             outputPath=outdir + "XANES/Plot_1D_multi", markWhiteline= True)
 
 
